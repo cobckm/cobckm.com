@@ -19,8 +19,13 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 
+	r.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		homeTmpl.ExecuteTemplate(w, "base.html", nil)
+	})
+	r.Get("/resume", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "static/resume.pdf")
 	})
 
 	srv := &http.Server{
