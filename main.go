@@ -1,6 +1,7 @@
 package main
 
 import (
+	"html/template"
 	"log"
 	"net/http"
 	"time"
@@ -10,10 +11,16 @@ import (
 )
 
 func main() {
+	homeTmpl := template.Must(template.ParseFiles(
+		"templates/base.html",
+		"templates/pages/home.html",
+	))
+
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
+
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Under Construction"))
+		homeTmpl.ExecuteTemplate(w, "base.html", nil)
 	})
 
 	srv := &http.Server{
